@@ -8,14 +8,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="zh">
-      <body className="antialiased">
-        {children}
-      </body>
+      <head>
+        <title>八字分析</title>
+        <meta name="description" content="八字命理分析工具" />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
