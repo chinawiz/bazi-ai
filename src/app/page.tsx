@@ -1,101 +1,101 @@
-import Image from "next/image";
+'use client'
+import { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import styles from './page.module.css'
 
-export default function Home() {
+export default function BaziForm() {
+  const [result, setResult] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setLoading(true)
+    
+    const formData = new FormData(e.target)
+    const response = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        year: formData.get('year'),
+        month: formData.get('month'),
+        day: formData.get('day'),
+        time: formData.get('time'),
+        gender: formData.get('gender'),
+        birthplace: formData.get('birthplace')
+      })
+    })
+    
+    const data = await response.json()
+    setResult(data.analysis)
+    setLoading(false)
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className={styles.container}>
+      <h1 className={styles.title}>八字分析</h1>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.row}>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>性别：</label>
+            <div className={styles.radioGroup}>
+              <label><input type="radio" name="gender" value="male" required /> 男</label>
+              <label><input type="radio" name="gender" value="female" required /> 女</label>
+            </div>
+          </div>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>出生地点：</label>
+            <input type="text" name="birthplace" placeholder="如：北京" required className={styles.input} />
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className={styles.row}>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>出生年份：</label>
+            <input type="number" name="year" min="1900" max="2100" required className={styles.input} />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>月份：</label>
+            <input type="number" name="month" min="1" max="12" required className={styles.input} />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>日期：</label>
+            <input type="number" name="day" min="1" max="31" required className={styles.input} />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>时辰：</label>
+            <input type="text" name="time" placeholder="如：子时" required className={styles.input} />
+          </div>
+        </div>
+
+        <button type="submit" disabled={loading} className={styles.button}>
+          {loading ? (
+            <span className={styles.loadingText}>
+              解析中
+              <span className={styles.dotOne}>.</span>
+              <span className={styles.dotTwo}>.</span>
+              <span className={styles.dotThree}>.</span>
+            </span>
+          ) : '开始解析'}
+        </button>
+      </form>
+      
+      {loading && (
+        <div className={styles.loadingBox}>
+          <div className={styles.spinner}></div>
+          <p>正在分析命理，请稍候...</p>
+        </div>
+      )}
+      
+      {result && !loading && (
+        <div className={styles.resultBox}>
+          <h3>解析结果：</h3>
+          <div className={styles.markdownContent}>
+            <ReactMarkdown>{result}</ReactMarkdown>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }
